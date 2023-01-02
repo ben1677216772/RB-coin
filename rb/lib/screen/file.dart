@@ -16,6 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rb/check.dart';
+import 'package:rb/check_name_v.dart';
 import 'package:rb/check_u.dart';
 
 class file extends StatefulWidget {
@@ -34,7 +35,9 @@ class _fileState extends State<file> {
     check check_ = check();
     check_u checku = check_u();
     check_uuu checkuuu = check_uuu();
+    check_name_v check_name_video = check_name_v();
     var now = DateTime.now();
+    var check_test = 0;
 
     String uid = FirebaseAuth.instance.currentUser!.uid;
     check_f() async {
@@ -69,6 +72,7 @@ class _fileState extends State<file> {
     Future<void> upload_path(String a) {
       CollectionReference user =
           FirebaseFirestore.instance.collection('database');
+
       return user.doc(uid).update({'video': a});
     }
 
@@ -76,6 +80,30 @@ class _fileState extends State<file> {
       CollectionReference user =
           FirebaseFirestore.instance.collection('database');
       return user.doc(uid).update({'upload': a});
+    }
+
+    check_name(String name_video) async {
+      try {
+        await FirebaseFirestore.instance
+            .collection('name_video')
+            .doc(name_video)
+            .get()
+            .then((val) async {
+          if (val.data()!['check'] == true) {
+            print('has_data');
+            check_name_video.check_v = 1;
+          }
+        });
+      } catch (e) {
+        print('dont_have');
+        check_name_video.check_v = 0;
+      }
+    }
+
+    add_video_name(String name_) async {
+      CollectionReference name =
+          FirebaseFirestore.instance.collection('name_video');
+      name.doc(name_).set({'check': true});
     }
 
     Future uploadFile() async {
@@ -89,31 +117,39 @@ class _fileState extends State<file> {
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.red);
         return null;
+      } else {
+        final fileName = basename(file!.path);
+        print(fileName.toString());
+        await check_name(fileName.toString());
       }
-      ;
-      if (checku.check__u == 1) {
+      if (check_name_video.check_v == 1) {
         Fluttertoast.showToast(
-            msg: 'คุณuploadครบ4ครั้งแล้ว',
+            msg: 'ไม่สามารถUpload videoซ้ำได้กรุณาถ่ายvideoใหม่',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.red);
+      } else if (checku.check__u == 1) {
+        Fluttertoast.showToast(
+            msg: 'คุณUploadครบ4ครั้งแล้ว',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.red);
       } else if (check_.check__ == 1) {
         Fluttertoast.showToast(
-            msg: 'videoคุณยังไม่ถูก accept',
+            msg: 'videoคุณยังอยู่ในขั้นตอนตรวจสอบ',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.red);
       } else {
         final fileName = basename(file!.path);
         final destination = 'video/$fileName';
-
         task = FirebaseApi.uploadFile(destination, file!);
         setState(() {});
-
         if (task == null) return;
         int b = int.parse(checkuuu.check__uuu.toString());
         int z = b + 1;
         final snapshot = await task!.whenComplete(() {});
+        await add_video_name(fileName.toString());
         final urlDownload = await snapshot.ref.getDownloadURL();
         upload_path(urlDownload.toString());
         upload_upload(z);
