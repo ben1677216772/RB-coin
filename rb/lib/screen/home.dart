@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rb/screen/file.dart';
+import 'package:rb/screen/history.dart';
 import 'package:rb/screen/rank.dart';
 import 'package:rb/screen/notification.dart';
 import 'package:rb/screen/profile.dart';
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold, fontFamily: 'Prompt'),
                     ),
                     SizedBox(
-                      width: 167,
+                      width: 3,
                     ),
                     IconButton(
                         icon: Icon(Icons.info),
@@ -86,7 +87,18 @@ class _HomePageState extends State<HomePage> {
                           await _launchUrl('https://youtu.be/yTG20BgVwng');
                         })),
                     SizedBox(
-                      width: 25,
+                      width: 135,
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.history_outlined),
+                        onPressed: (() async {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return history();
+                          }));
+                        })),
+                    SizedBox(
+                      width: 10,
                     ),
                     IconButton(
                       onPressed: () async {
