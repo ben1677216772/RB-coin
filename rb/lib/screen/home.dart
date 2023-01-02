@@ -38,6 +38,15 @@ class _HomePageState extends State<HomePage> {
           .update({'accept': 0, 'upload': 0, 'day': a, 'month': b, 'year': c});
     }
 
+    Future<void> add_remove_m_vote() {
+      CollectionReference user =
+          FirebaseFirestore.instance.collection('database');
+      return user.doc(uid).update({
+        'vote1': "",
+        'vote2': "",
+      });
+    }
+
     var now = DateTime.now();
     return StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -50,6 +59,7 @@ class _HomePageState extends State<HomePage> {
                 now.year != snapshot.data!['year'] ||
                 now.month != snapshot.data!['month']) {
               update_time_upload(now.day, now.month, now.year);
+              add_remove_m_vote();
             }
             if (!snapshot.hasData) {
               return Center(

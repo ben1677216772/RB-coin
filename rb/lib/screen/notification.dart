@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:rb/data_for_notification.dart';
+import 'package:rb/screen/file.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -72,10 +73,53 @@ class _notificationState extends State<notification> {
       return user.doc(uid).update({'coin': a + 2});
     }
 
+    Future<void> add_vote(String u, int a) {
+      CollectionReference user =
+          FirebaseFirestore.instance.collection('database');
+      return user.doc(u).update({'vote': a + 1});
+    }
+
+    Future<void> add_vote_zero(String u) {
+      CollectionReference user =
+          FirebaseFirestore.instance.collection('database');
+      return user.doc(u).update({'vote': 0});
+    }
+
     Future<void> add_coin_up(String u, int a) {
       CollectionReference user =
           FirebaseFirestore.instance.collection('database');
       return user.doc(u).update({'coin': a + 5});
+    }
+
+    Future<void> add_vote_to_me(int u, String a) {
+      CollectionReference user =
+          FirebaseFirestore.instance.collection('database');
+      return user.doc(uid).update({'vote${u.toString()}': a});
+    }
+
+    Future<void> add_vote_m(String u, String a) {
+      CollectionReference user =
+          FirebaseFirestore.instance.collection('database');
+      return user.doc(u).update({
+        'vote_m': FieldValue.arrayUnion([a])
+      });
+    }
+
+    Future<void> add_remove_m_vote(String u) {
+      CollectionReference user =
+          FirebaseFirestore.instance.collection('database');
+      return user.doc(u).update({
+        'vote1': "",
+        'vote2': "",
+      });
+    }
+
+    Future<void> add_remove_m_vote_(String u, String a) {
+      CollectionReference user =
+          FirebaseFirestore.instance.collection('database');
+      return user.doc(u).update({
+        'vote_m': FieldValue.arrayRemove([a]),
+      });
     }
 
     return Scaffold(
@@ -126,6 +170,24 @@ class _notificationState extends State<notification> {
                             return ListView.builder(
                                 itemCount: Data.data_l!.length,
                                 itemBuilder: ((context, index) {
+                                  if (Data.data_l![index]['vote'] == 3) {
+                                    String my =
+                                        Data.data_l![index]['uid'].toString();
+                                    add_coin_up(
+                                        my, Data.data_l![index]['coin']);
+                                    add_vote_zero(Data.data_l![index]['uid']);
+                                    int n_ =
+                                        Data.data_l![index]['vote_m'].length;
+                                    for (int s = 0; s < n_; s++) {
+                                      String uid_m =
+                                          Data.data_l![index]['vote_m'][s];
+                                      add_remove_m_vote(uid_m);
+                                      add_remove_m_vote_(
+                                          Data.data_l![index]['uid'], uid_m);
+                                    }
+                                    re_video(my);
+                                  }
+                                  ;
                                   return ListTile(
                                     title: Row(
                                       children: [
@@ -133,10 +195,23 @@ class _notificationState extends State<notification> {
                                           icon: Icon(
                                             Icons.play_circle,
                                             color: Colors.blue,
-                                            size: 30,
+                                            size: 33,
                                           ),
                                           onPressed: () async {
-                                            if (snapshot.data!['accept'] < 2) {
+                                            if (Data.data_l![index]['vote'] ==
+                                                4) {
+                                              Fluttertoast.showToast(
+                                                  fontSize: 15,
+                                                  msg:
+                                                      'videoได้รับการยืนยันแล้ว',
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor:
+                                                      Colors.green);
+                                            } else if (snapshot
+                                                    .data!['accept'] <
+                                                2) {
                                               await _launchUrl(
                                                   Data.data_l![index]['video']);
 
@@ -147,9 +222,9 @@ class _notificationState extends State<notification> {
                                               });
                                             } else {
                                               Fluttertoast.showToast(
-                                                  fontSize: 20,
+                                                  fontSize: 15,
                                                   msg:
-                                                      'คุณได้acceptครบแล้วกรุณารอวันถัดไป',
+                                                      'คุณได้Voteครบแล้วกรุณารอวันถัดไป',
                                                   toastLength:
                                                       Toast.LENGTH_SHORT,
                                                   gravity: ToastGravity.BOTTOM,
@@ -157,22 +232,19 @@ class _notificationState extends State<notification> {
                                             }
                                           },
                                         ),
-                                        Container(
-                                          width: 170,
-                                          child: Row(children: [
-                                            Text(
-                                              Data.data_l![index]['name'],
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              Data.data_l![index]['surname'],
-                                            ),
-                                          ]),
+                                        Text(
+                                          '<--กดเพื่อตรวจสอบvideo',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ),
                                         ),
                                         SizedBox(
-                                          width: 40,
+                                          width: 22,
+                                        ),
+                                        Text(
+                                            '${Data.data_l![index]['vote']}/3'),
+                                        SizedBox(
+                                          width: 12,
                                         ),
                                         IconButton(
                                           icon: Icon(
@@ -181,11 +253,38 @@ class _notificationState extends State<notification> {
                                             size: 30,
                                           ),
                                           onPressed: () async {
-                                            if (snapshot.data!['accept'] >= 2) {
+                                            if (Data.data_l![index]['vote'] ==
+                                                3) {
                                               Fluttertoast.showToast(
-                                                  fontSize: 20,
+                                                  fontSize: 15,
                                                   msg:
-                                                      'คุณได้acceptครบแล้วกรุณารอวันถัดไป',
+                                                      'videoได้รับการยืนยันแล้ว',
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor:
+                                                      Colors.green);
+                                            } else if (snapshot
+                                                    .data!['accept'] >=
+                                                2) {
+                                              Fluttertoast.showToast(
+                                                  fontSize: 15,
+                                                  msg:
+                                                      'คุณได้Voteครบแล้วกรุณารอวันถัดไป',
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor: Colors.red);
+                                            } else if (snapshot
+                                                        .data!['vote1'] ==
+                                                    Data.data_l![index]
+                                                        ['uid'] ||
+                                                snapshot.data!['vote2'] ==
+                                                    Data.data_l![index]
+                                                        ['uid']) {
+                                              Fluttertoast.showToast(
+                                                  fontSize: 15,
+                                                  msg: 'กรุณาอย่าVote videoซ้ำ',
                                                   toastLength:
                                                       Toast.LENGTH_SHORT,
                                                   gravity: ToastGravity.BOTTOM,
@@ -195,13 +294,17 @@ class _notificationState extends State<notification> {
                                                   snapshot.data!['accept']);
                                               add_coin_accept(
                                                   snapshot.data!['coin']);
-                                              String my = Data.data_l![index]
-                                                      ['uid']
-                                                  .toString();
-                                              add_coin_up(my,
-                                                  Data.data_l![index]['coin']);
 
-                                              re_video(my);
+                                              add_vote_to_me(
+                                                  snapshot.data!['accept'] + 1,
+                                                  Data.data_l![index]['uid']);
+                                              add_vote(
+                                                  Data.data_l![index]['uid'],
+                                                  Data.data_l![index]['vote']);
+                                              add_vote_m(
+                                                  Data.data_l![index]['uid'],
+                                                  uid);
+
                                               Fluttertoast.showToast(
                                                   msg: 'คุณได้รับ2coin',
                                                   fontSize: 20,
@@ -210,6 +313,7 @@ class _notificationState extends State<notification> {
                                                   gravity: ToastGravity.BOTTOM,
                                                   backgroundColor:
                                                       Colors.green);
+
                                               setState(() {
                                                 b = Data.data_l!.length;
                                                 n = 0;
@@ -218,7 +322,7 @@ class _notificationState extends State<notification> {
                                               Fluttertoast.showToast(
                                                   fontSize: 15,
                                                   msg:
-                                                      'สามารถกดได้แค่videoของ ${Data.data_l![n - 1]['name']}  ${Data.data_l![n - 1]['surname']} หากต้องการเปลียนให้ดูคลิปคนใหม่',
+                                                      'สามารถกดยืนยันได้แค่videoที่คุณดูเท่านั้น',
                                                   toastLength:
                                                       Toast.LENGTH_SHORT,
                                                   gravity: ToastGravity.BOTTOM,
@@ -233,13 +337,14 @@ class _notificationState extends State<notification> {
                                                   backgroundColor: Colors.red);
                                             }
                                             await getData();
+
                                             setState(() {
                                               b = Data.data_l!.length;
                                             });
                                           },
                                         ),
                                         SizedBox(
-                                          width: 3,
+                                          width: 0,
                                         ),
                                         IconButton(
                                           icon: Icon(
@@ -248,11 +353,24 @@ class _notificationState extends State<notification> {
                                             size: 30,
                                           ),
                                           onPressed: () async {
-                                            if (snapshot.data!['accept'] >= 2) {
+                                            if (Data.data_l![index]['vote'] ==
+                                                3) {
                                               Fluttertoast.showToast(
-                                                  fontSize: 20,
+                                                  fontSize: 15,
                                                   msg:
-                                                      'คุณได้acceptครบแล้วกรุณารอวันถัดไป',
+                                                      'videoได้รับการยืนยันแล้ว',
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor:
+                                                      Colors.green);
+                                            } else if (snapshot
+                                                    .data!['accept'] >=
+                                                2) {
+                                              Fluttertoast.showToast(
+                                                  fontSize: 15,
+                                                  msg:
+                                                      'คุณได้Voteครบแล้วกรุณารอวันถัดไป',
                                                   toastLength:
                                                       Toast.LENGTH_SHORT,
                                                   gravity: ToastGravity.BOTTOM,
@@ -265,7 +383,11 @@ class _notificationState extends State<notification> {
                                               String my = Data.data_l![index]
                                                       ['uid']
                                                   .toString();
-
+                                              add_vote_to_me(
+                                                  snapshot.data!['accept'] + 1,
+                                                  Data.data_l![index]['uid']);
+                                              add_vote_zero(
+                                                  Data.data_l![index]['uid']);
                                               re_video(my);
                                               Fluttertoast.showToast(
                                                   msg: 'สำเร็จ',
