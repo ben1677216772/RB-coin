@@ -57,8 +57,7 @@ class history extends StatelessWidget {
                                   ]),
                               child: Center(
                                 child: Text(
-                                  '${history_m['name']}',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  'ครู${history_m['name']}',
                                 ),
                               ),
                             ),
