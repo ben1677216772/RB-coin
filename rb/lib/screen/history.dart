@@ -57,8 +57,7 @@ class history extends StatelessWidget {
                                   ]),
                               child: Center(
                                 child: Text(
-                                  '${history_m['name']}',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  'ครู${history_m['name']}',
                                 ),
                               ),
                             ),
@@ -118,7 +117,7 @@ class history extends StatelessWidget {
                                   width: 3,
                                 ),
                                 Container(
-                                  width: 60,
+                                  width: 80,
                                   height: 30,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20.0),
@@ -140,7 +139,7 @@ class history extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 20,
+                                  width: 4,
                                 ),
                                 Text('จำนวน'),
                                 SizedBox(
@@ -168,7 +167,7 @@ class history extends StatelessWidget {
                                       Container(
                                         width: 36,
                                         child: Text(
-                                          '-${history_m['num']}',
+                                          '-${history_m['coin']}',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black),

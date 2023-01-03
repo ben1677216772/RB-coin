@@ -41,6 +41,14 @@ class _profileState extends State<profile> {
       return user.doc(uid).update({'computer': a});
     }
 
+    Future<void> update_history(Map a) {
+      CollectionReference user =
+          FirebaseFirestore.instance.collection('database');
+      return user.doc(uid).update({
+        'history': FieldValue.arrayUnion([a])
+      });
+    }
+
     return Scaffold(
         appBar: AppBar(title: Text('Profile')),
         body: StreamBuilder(
@@ -213,10 +221,19 @@ class _profileState extends State<profile> {
                                     ),
                                     onPressed: (() {
                                       if (snapshot.data!['coin'] >= 800) {
+                                        List his_l = snapshot.data!['history'];
                                         updatecoin(
                                             snapshot.data!['coin'] - 800);
                                         update_score_math(
                                             snapshot.data!['math'] + 5);
+                                        update_history({
+                                          "check": "sale_coin",
+                                          "grade": "math",
+                                          "coin": "800",
+                                          "num": snapshot.data!['history']
+                                                  [his_l.length - 1]['num'] +
+                                              1,
+                                        });
                                       } else {
                                         Fluttertoast.showToast(
                                             msg: 'คุณมีcoinไม่พอที่จะแลก',
@@ -321,6 +338,15 @@ class _profileState extends State<profile> {
                                             snapshot.data!['coin'] - 600);
                                         update_score_social(
                                             snapshot.data!['social'] + 5);
+                                        List his_l = snapshot.data!['history'];
+                                        update_history({
+                                          "check": "sale_coin",
+                                          "grade": "social",
+                                          "coin": "600",
+                                          "num": snapshot.data!['history']
+                                                  [his_l.length - 1]['num'] +
+                                              1,
+                                        });
                                       } else {
                                         Fluttertoast.showToast(
                                             msg: 'คุณมีcoinไม่พอที่จะแลก',
@@ -425,6 +451,15 @@ class _profileState extends State<profile> {
                                             snapshot.data!['coin'] - 600);
                                         update_score_computer(
                                             snapshot.data!['computer'] + 5);
+                                        List his_l = snapshot.data!['history'];
+                                        update_history({
+                                          "check": "sale_coin",
+                                          "grade": "computer",
+                                          "coin": "600",
+                                          "num": snapshot.data!['history']
+                                                  [his_l.length - 1]['num'] +
+                                              1,
+                                        });
                                       } else {
                                         Fluttertoast.showToast(
                                             msg: 'คุณมีcoinไม่พอที่จะแลก',
