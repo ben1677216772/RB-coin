@@ -142,11 +142,11 @@ class _teacherState extends State<teacher> {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              left: 25, right: 0),
+                                              left: 20, right: 0),
                                           child: Container(
                                             child: Row(children: [
                                               SizedBox(
-                                                width: 5,
+                                                width: 0,
                                                 height: 40,
                                               ),
                                               Container(
@@ -204,7 +204,47 @@ class _teacherState extends State<teacher> {
                                         Row(
                                           children: [
                                             SizedBox(
-                                              width: 40,
+                                              width: 20,
+                                            ),
+                                            Text(
+                                              'math ${data['math'].toString()}/5',
+                                              style: TextStyle(
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 170, 255, 241),
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              'social ${data['social'].toString()}/5',
+                                              style: TextStyle(
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 182, 252, 185),
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              'computer ${data['computer'].toString()}/5',
+                                              style: TextStyle(
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 167, 174, 238),
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 20,
                                             ),
                                             Container(
                                               width: 200,
@@ -349,11 +389,11 @@ class _teacherState extends State<teacher> {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              left: 10, right: 0),
+                                              left: 20, right: 0),
                                           child: Container(
                                             child: Row(children: [
                                               SizedBox(
-                                                width: 5,
+                                                width: 0,
                                                 height: 40,
                                               ),
                                               Container(
@@ -411,7 +451,47 @@ class _teacherState extends State<teacher> {
                                         Row(
                                           children: [
                                             SizedBox(
-                                              width: 40,
+                                              width: 20,
+                                            ),
+                                            Text(
+                                              'math ${data['math'].toString()}/5',
+                                              style: TextStyle(
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 170, 255, 241),
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              'social ${data['social'].toString()}/5',
+                                              style: TextStyle(
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 182, 252, 185),
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              'computer ${data['computer'].toString()}/5',
+                                              style: TextStyle(
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 167, 174, 238),
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 20,
                                             ),
                                             Container(
                                               width: 200,
