@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:rb/name_teacher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class teacher extends StatefulWidget {
@@ -15,6 +16,8 @@ class teacher extends StatefulWidget {
 class _teacherState extends State<teacher> {
   final clsss_ = TextEditingController();
   final number_ = TextEditingController();
+  String uid = FirebaseAuth.instance.currentUser!.uid;
+  add_profile_name_teacher name_t = add_profile_name_teacher();
 
   String class_a = '';
   String number_a = '';
@@ -22,6 +25,24 @@ class _teacherState extends State<teacher> {
     CollectionReference user =
         FirebaseFirestore.instance.collection('database');
     return user.doc(uid).update({'coin': a});
+  }
+
+  Future<void> update_history(String uid, Map a) {
+    CollectionReference user =
+        FirebaseFirestore.instance.collection('database');
+    return user.doc(uid).update({
+      'history': FieldValue.arrayUnion([a])
+    });
+  }
+
+  profile_teacher() async {
+    await FirebaseFirestore.instance
+        .collection('database')
+        .doc(uid)
+        .get()
+        .then((val) async {
+      name_t.name_teacher = val.data()!['name'];
+    });
   }
 
   @override
@@ -69,7 +90,8 @@ class _teacherState extends State<teacher> {
           SizedBox(
             width: 50,
             child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  await profile_teacher();
                   setState(() {
                     class_a = clsss_.text.trim();
                     number_a = number_.text.trim();
@@ -202,6 +224,9 @@ class _teacherState extends State<teacher> {
                                                   bottom: 10),
                                               child: ElevatedButton(
                                                   onPressed: (() {
+                                                    List his_l =
+                                                        data['history'];
+
                                                     try {
                                                       if (int.parse(coin_.text
                                                               .trim()) <=
@@ -213,6 +238,21 @@ class _teacherState extends State<teacher> {
                                                                     .text
                                                                     .trim()
                                                                     .toString()));
+
+                                                        update_history(
+                                                            data['uid'], {
+                                                          "check": "add_coin",
+                                                          "coin": coin_.text
+                                                              .trim()
+                                                              .toString(),
+                                                          "name": name_t
+                                                              .name_teacher,
+                                                          "num": data['history']
+                                                                  [
+                                                                  his_l.length -
+                                                                      1]['num'] +
+                                                              1,
+                                                        });
                                                         Fluttertoast.showToast(
                                                             fontSize: 15,
                                                             msg:
@@ -391,6 +431,9 @@ class _teacherState extends State<teacher> {
                                                   bottom: 10),
                                               child: ElevatedButton(
                                                   onPressed: (() {
+                                                    List his_l =
+                                                        data['history'];
+
                                                     try {
                                                       if (int.parse(coin_.text
                                                               .trim()) <=
@@ -402,6 +445,22 @@ class _teacherState extends State<teacher> {
                                                                     .text
                                                                     .trim()
                                                                     .toString()));
+                                                        update_history(
+                                                            data['uid'], {
+                                                          "check": "add_coin",
+                                                          "coin": coin_.text
+                                                              .trim()
+                                                              .toString(),
+                                                          "name": name_t
+                                                              .name_teacher,
+                                                          "num": data['history']
+                                                                  [
+                                                                  his_l.length -
+                                                                      1]['num'] +
+                                                              1,
+                                                        });
+
+                                                        //add
                                                         Fluttertoast.showToast(
                                                             fontSize: 15,
                                                             msg:
