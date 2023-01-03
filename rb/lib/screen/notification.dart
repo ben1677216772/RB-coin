@@ -49,6 +49,7 @@ class _notificationState extends State<notification> {
 
   int n = 0;
   int b = 0;
+
   @override
   Widget build(BuildContext context) {
     Future<void> _launchUrl(String url) async {
@@ -77,6 +78,14 @@ class _notificationState extends State<notification> {
       CollectionReference user =
           FirebaseFirestore.instance.collection('database');
       return user.doc(u).update({'vote': a + 1});
+    }
+
+    Future<void> update_history(String u, Map a) {
+      CollectionReference user =
+          FirebaseFirestore.instance.collection('database');
+      return user.doc(u).update({
+        'history': FieldValue.arrayUnion([a])
+      });
     }
 
     Future<void> add_vote_zero(String u) {
@@ -170,24 +179,6 @@ class _notificationState extends State<notification> {
                             return ListView.builder(
                                 itemCount: Data.data_l!.length,
                                 itemBuilder: ((context, index) {
-                                  if (Data.data_l![index]['vote'] == 3) {
-                                    String my =
-                                        Data.data_l![index]['uid'].toString();
-                                    add_coin_up(
-                                        my, Data.data_l![index]['coin']);
-                                    add_vote_zero(Data.data_l![index]['uid']);
-                                    int n_ =
-                                        Data.data_l![index]['vote_m'].length;
-                                    for (int s = 0; s < n_; s++) {
-                                      String uid_m =
-                                          Data.data_l![index]['vote_m'][s];
-                                      add_remove_m_vote(uid_m);
-                                      add_remove_m_vote_(
-                                          Data.data_l![index]['uid'], uid_m);
-                                    }
-                                    re_video(my);
-                                  }
-                                  ;
                                   return ListTile(
                                     title: Row(
                                       children: [
@@ -198,8 +189,10 @@ class _notificationState extends State<notification> {
                                             size: 33,
                                           ),
                                           onPressed: () async {
+                                            await getData();
                                             if (Data.data_l![index]['vote'] ==
-                                                4) {
+                                                3) {
+                                              setState(() {});
                                               Fluttertoast.showToast(
                                                   fontSize: 15,
                                                   msg:
@@ -253,6 +246,7 @@ class _notificationState extends State<notification> {
                                             size: 30,
                                           ),
                                           onPressed: () async {
+                                            await getData();
                                             if (Data.data_l![index]['vote'] ==
                                                 3) {
                                               Fluttertoast.showToast(
@@ -304,6 +298,16 @@ class _notificationState extends State<notification> {
                                               add_vote_m(
                                                   Data.data_l![index]['uid'],
                                                   uid);
+                                              List his_l =
+                                                  snapshot.data!['history'];
+
+                                              update_history(uid, {
+                                                "check": "vote",
+                                                "num": snapshot.data!['history']
+                                                            [his_l.length - 1]
+                                                        ['num'] +
+                                                    1
+                                              });
 
                                               Fluttertoast.showToast(
                                                   msg: 'คุณได้รับ2coin',
@@ -337,6 +341,50 @@ class _notificationState extends State<notification> {
                                                   backgroundColor: Colors.red);
                                             }
                                             await getData();
+                                            if (Data.data_l![index]['vote'] ==
+                                                3) {
+                                              List his_l = Data.data_l![index]
+                                                  ['history'];
+                                              update_history(
+                                                  Data.data_l![index]['uid'], {
+                                                "check": "upload",
+                                                "num": Data.data_l![index]
+                                                                ['history']
+                                                            [his_l.length - 1]
+                                                        ['num'] +
+                                                    1
+                                              });
+                                              String my = Data.data_l![index]
+                                                      ['uid']
+                                                  .toString();
+                                              re_video(my);
+                                              add_coin_up(my,
+                                                  Data.data_l![index]['coin']);
+                                              add_vote_zero(
+                                                  Data.data_l![index]['uid']);
+                                              int n_ = Data
+                                                  .data_l![index]['vote_m']
+                                                  .length;
+                                              for (int s = 0; s < n_; s++) {
+                                                String uid_m =
+                                                    Data.data_l![index]
+                                                        ['vote_m'][s];
+                                                add_remove_m_vote(uid_m);
+                                                add_remove_m_vote_(
+                                                    Data.data_l![index]['uid'],
+                                                    uid_m);
+                                              }
+                                              await getData();
+                                              Fluttertoast.showToast(
+                                                  fontSize: 15,
+                                                  msg:
+                                                      'videoได้รับการยืนยันแล้ว',
+                                                  toastLength:
+                                                      Toast.LENGTH_LONG,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor:
+                                                      Colors.green);
+                                            }
 
                                             setState(() {
                                               b = Data.data_l!.length;
@@ -353,6 +401,7 @@ class _notificationState extends State<notification> {
                                             size: 30,
                                           ),
                                           onPressed: () async {
+                                            await getData();
                                             if (Data.data_l![index]['vote'] ==
                                                 3) {
                                               Fluttertoast.showToast(
