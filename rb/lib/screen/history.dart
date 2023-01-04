@@ -395,7 +395,38 @@ class history extends StatelessWidget {
                                             ),
                                           ],
                                         )
-                                      : Container(),
+                                      : history_m['check'] == 'reject'
+                                          ? Row(
+                                              children: [
+                                                Container(
+                                                  width: 280,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0),
+                                                      color: Color.fromARGB(
+                                                          255, 255, 162, 162),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.grey
+                                                              .withOpacity(0.4),
+                                                          spreadRadius: 2,
+                                                          blurRadius: 2,
+                                                          offset: Offset(2, 2),
+                                                        )
+                                                      ]),
+                                                  child: Center(
+                                                      child: Text(
+                                                    'videoถูกrejectกรุณาuploadใหม่',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )),
+                                                ),
+                                              ],
+                                            )
+                                          : Container(),
                 );
               }),
             );

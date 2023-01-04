@@ -247,20 +247,8 @@ class _notificationState extends State<notification> {
                                           ),
                                           onPressed: () async {
                                             await getData();
-                                            if (Data.data_l![index]['vote'] ==
-                                                3) {
-                                              Fluttertoast.showToast(
-                                                  fontSize: 15,
-                                                  msg:
-                                                      'videoได้รับการยืนยันแล้ว',
-                                                  toastLength:
-                                                      Toast.LENGTH_SHORT,
-                                                  gravity: ToastGravity.BOTTOM,
-                                                  backgroundColor:
-                                                      Colors.green);
-                                            } else if (snapshot
-                                                    .data!['accept'] >=
-                                                2) {
+
+                                            if (snapshot.data!['accept'] >= 2) {
                                               Fluttertoast.showToast(
                                                   fontSize: 15,
                                                   msg:
@@ -402,24 +390,26 @@ class _notificationState extends State<notification> {
                                           ),
                                           onPressed: () async {
                                             await getData();
-                                            if (Data.data_l![index]['vote'] ==
-                                                3) {
-                                              Fluttertoast.showToast(
-                                                  fontSize: 15,
-                                                  msg:
-                                                      'videoได้รับการยืนยันแล้ว',
-                                                  toastLength:
-                                                      Toast.LENGTH_SHORT,
-                                                  gravity: ToastGravity.BOTTOM,
-                                                  backgroundColor:
-                                                      Colors.green);
-                                            } else if (snapshot
-                                                    .data!['accept'] >=
-                                                2) {
+
+                                            if (snapshot.data!['accept'] >= 2) {
                                               Fluttertoast.showToast(
                                                   fontSize: 15,
                                                   msg:
                                                       'คุณได้Voteครบแล้วกรุณารอวันถัดไป',
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  backgroundColor: Colors.red);
+                                            } else if (snapshot
+                                                        .data!['vote1'] ==
+                                                    Data.data_l![index]
+                                                        ['uid'] ||
+                                                snapshot.data!['vote2'] ==
+                                                    Data.data_l![index]
+                                                        ['uid']) {
+                                              Fluttertoast.showToast(
+                                                  fontSize: 15,
+                                                  msg: 'กรุณาอย่าVote videoซ้ำ',
                                                   toastLength:
                                                       Toast.LENGTH_SHORT,
                                                   gravity: ToastGravity.BOTTOM,
@@ -429,22 +419,70 @@ class _notificationState extends State<notification> {
                                                   snapshot.data!['accept']);
                                               add_coin_accept(
                                                   snapshot.data!['coin']);
-                                              String my = Data.data_l![index]
-                                                      ['uid']
-                                                  .toString();
+
                                               add_vote_to_me(
                                                   snapshot.data!['accept'] + 1,
                                                   Data.data_l![index]['uid']);
+                                              add_vote(
+                                                  Data.data_l![index]['uid'],
+                                                  Data.data_l![index]['vote']);
+                                              add_vote_m(
+                                                  Data.data_l![index]['uid'],
+                                                  uid);
+                                              List his_l =
+                                                  snapshot.data!['history'];
+
+                                              update_history(uid, {
+                                                "check": "vote",
+                                                "num": snapshot.data!['history']
+                                                            [his_l.length - 1]
+                                                        ['num'] +
+                                                    1
+                                              });
+                                              await getData();
+
+                                              List his_ln = Data.data_l![index]
+                                                  ['history'];
+                                              update_history(
+                                                  Data.data_l![index]['uid'], {
+                                                "check": "reject",
+                                                "num": Data.data_l![index]
+                                                                ['history']
+                                                            [his_ln.length - 1]
+                                                        ['num'] +
+                                                    1
+                                              });
+                                              String my = Data.data_l![index]
+                                                      ['uid']
+                                                  .toString();
+                                              re_video(my);
+                                              add_coin_up(my,
+                                                  Data.data_l![index]['coin']);
                                               add_vote_zero(
                                                   Data.data_l![index]['uid']);
-                                              re_video(my);
+                                              int n_ = Data
+                                                  .data_l![index]['vote_m']
+                                                  .length;
+                                              for (int s = 0; s < n_; s++) {
+                                                String uid_m =
+                                                    Data.data_l![index]
+                                                        ['vote_m'][s];
+                                                add_remove_m_vote(uid_m);
+                                                add_remove_m_vote_(
+                                                    Data.data_l![index]['uid'],
+                                                    uid_m);
+                                              }
+                                              await getData();
+
                                               Fluttertoast.showToast(
-                                                  msg: 'สำเร็จ',
+                                                  msg:
+                                                      'video reject คุณได้รับ2coin',
+                                                  fontSize: 20,
                                                   toastLength:
                                                       Toast.LENGTH_SHORT,
                                                   gravity: ToastGravity.BOTTOM,
-                                                  backgroundColor:
-                                                      Colors.green);
+                                                  backgroundColor: Colors.red);
+
                                               setState(() {
                                                 b = Data.data_l!.length;
                                                 n = 0;
@@ -453,21 +491,66 @@ class _notificationState extends State<notification> {
                                               Fluttertoast.showToast(
                                                   fontSize: 15,
                                                   msg:
-                                                      'สามารถกดได้แค่videoของ ${Data.data_l![n - 1]['name']}  ${Data.data_l![n - 1]['surname']} หากต้องการเปลียนให้ดูคลิปคนใหม่',
+                                                      'สามารถกดยืนยันได้แค่videoที่คุณดูเท่านั้น',
                                                   toastLength:
                                                       Toast.LENGTH_SHORT,
                                                   gravity: ToastGravity.BOTTOM,
                                                   backgroundColor: Colors.red);
                                             } else {
                                               Fluttertoast.showToast(
-                                                  fontSize: 20,
                                                   msg: 'กรุณากดดูคลิปก่อน',
+                                                  fontSize: 20,
                                                   toastLength:
                                                       Toast.LENGTH_SHORT,
                                                   gravity: ToastGravity.BOTTOM,
                                                   backgroundColor: Colors.red);
                                             }
-                                            await getData();
+                                            // await getData();
+                                            // if (Data.data_l![index]['vote'] ==
+                                            //     3) {
+                                            //   List his_l = Data.data_l![index]
+                                            //       ['history'];
+                                            //   update_history(
+                                            //       Data.data_l![index]['uid'], {
+                                            //     "check": "upload",
+                                            //     "num": Data.data_l![index]
+                                            //                     ['history']
+                                            //                 [his_l.length - 1]
+                                            //             ['num'] +
+                                            //         1
+                                            //   });
+                                            //   String my = Data.data_l![index]
+                                            //           ['uid']
+                                            //       .toString();
+                                            //   re_video(my);
+                                            //   add_coin_up(my,
+                                            //       Data.data_l![index]['coin']);
+                                            //   add_vote_zero(
+                                            //       Data.data_l![index]['uid']);
+                                            //   int n_ = Data
+                                            //       .data_l![index]['vote_m']
+                                            //       .length;
+                                            //   for (int s = 0; s < n_; s++) {
+                                            //     String uid_m =
+                                            //         Data.data_l![index]
+                                            //             ['vote_m'][s];
+                                            //     add_remove_m_vote(uid_m);
+                                            //     add_remove_m_vote_(
+                                            //         Data.data_l![index]['uid'],
+                                            //         uid_m);
+                                            //   }
+                                            //   await getData();
+                                            //   Fluttertoast.showToast(
+                                            //       fontSize: 15,
+                                            //       msg:
+                                            //           'videoได้รับการยืนยันแล้ว',
+                                            //       toastLength:
+                                            //           Toast.LENGTH_LONG,
+                                            //       gravity: ToastGravity.BOTTOM,
+                                            //       backgroundColor:
+                                            //           Colors.green);
+                                            // }
+
                                             setState(() {
                                               b = Data.data_l!.length;
                                             });
