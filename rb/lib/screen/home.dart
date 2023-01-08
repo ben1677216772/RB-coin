@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                     IconButton(
                         icon: Icon(Icons.info),
                         onPressed: (() async {
-                          await _launchUrl('https://youtu.be/yTG20BgVwng');
+                          await _launchUrl('https://youtu.be/HhO14xEfIoM');
                         })),
                     SizedBox(
                       width: 135,
